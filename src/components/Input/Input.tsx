@@ -4,7 +4,14 @@ import useModeStore from '../../store/useStore';
 interface Props {}
 
 const Input: React.FC<Props> = () => {
-  const { setMode, setWordsWithTranslate, setWordsWithoutTranslate } = useModeStore();
+  const { 
+    setMode,
+    setWordsWithTranslate,
+    setWordsWithoutTranslate,
+    baseLanguage,
+    learningLanguage,
+  } = useModeStore();
+
   const [text, setText] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const maxLength = 5000;
@@ -15,21 +22,29 @@ const Input: React.FC<Props> = () => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
+
+    const cleanedText = text.replace(/[^\p{L}\p{M}'´ \n\r]/gu, '');
+    
     try {
       const response = await fetch('http://localhost:3000/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ 
+          text: cleanedText,
+          base_language_id: baseLanguage?.ID,
+          learning_language_id: learningLanguage?.ID,
+        }),
       });
+
       const data = await response.json();
-      console.log(response)
-      console.log(data)
+      console.log(response);
+      console.log(data);
+
       if (response.ok && (data.wordswithouttranslate || data.wordswithtranslate)) {
         setWordsWithoutTranslate(data.wordswithouttranslate);
         setWordsWithTranslate(data.wordswithtranslate);
-        
       } else {
         console.error('Error en la respuesta del servidor:', data);
       }
@@ -40,10 +55,9 @@ const Input: React.FC<Props> = () => {
       setMode('pull');
     }
   };
-  
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen p-4 text-white">
+    <div className="flex flex-col items-center justify-center p-4 text-blue-700">
       <h1 className="text-2xl font-bold mb-4">Entrada de Texto</h1>
       <label className="mb-2 text-customPrimary font-medium">
         Puedes escribir hasta {maxLength} caracteres

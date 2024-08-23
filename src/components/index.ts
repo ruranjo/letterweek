@@ -1,3 +1,7 @@
 export * from './Input'
 export * from './LoadWord'
 export * from './FillWords'
+export * from './TableWord'
+export * from './LanguageSelector'
+export * from './Header'
+export * from './GameSection'
