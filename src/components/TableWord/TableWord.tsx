@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useTable, useFilters, Column, Row } from 'react-table';
-import { Language } from '../../interfaces/input.interface';
+import { Language, Word } from '../../interfaces/input.interface';
 
-interface WordData {
-  ID: number;
-  MainWord: string;
-  TranslateWord: string;
-  BaseLanguageID: number;
-  LearningLanguageID: number;
-}
+
 
 interface DefaultColumnFilterProps {
   column: {
     filterValue: string | undefined;
-    preFilteredRows: Row<WordData>[];
+    preFilteredRows: Row<Word>[];
     setFilter: (filterValue: string | undefined) => void;
   };
 }
@@ -36,7 +30,7 @@ const DefaultColumnFilter: React.FC<DefaultColumnFilterProps> = ({
 };
 
 const TableWord: React.FC = () => {
-  const [data, setData] = useState<WordData[]>([]);
+  const [data, setData] = useState<Word[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +61,7 @@ const TableWord: React.FC = () => {
         }
 
         if (wordsContentType && wordsContentType.includes('application/json')) {
-          const wordsData: WordData[] = await wordsResponse.json();
+          const wordsData: Word[] = await wordsResponse.json();
           setData(wordsData);
         } else {
           throw new Error('Words response was not JSON');
@@ -83,7 +77,7 @@ const TableWord: React.FC = () => {
     fetchData();
   }, []);
 
-  const columns: Column<WordData>[] = React.useMemo(
+  const columns: Column<Word>[] = React.useMemo(
     () => [
       {
         Header: 'ID',
@@ -108,6 +102,11 @@ const TableWord: React.FC = () => {
       {
         Header: 'Learning Language ID',
         accessor: 'LearningLanguageID',
+        Filter: DefaultColumnFilter,
+      },
+      {
+        Header: 'Count',
+        accessor: 'Count',
         Filter: DefaultColumnFilter,
       },
     ],

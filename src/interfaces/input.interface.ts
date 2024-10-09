@@ -4,6 +4,7 @@ export interface Word {
     BaseLanguageID: number;
     TranslateWord: string | null;
     LearningLanguageID: number;
+    Count: number;
   }
 
 export interface Language {

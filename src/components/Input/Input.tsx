@@ -32,7 +32,7 @@ const Input: React.FC<Props> = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          text: cleanedText,
+          text: cleanedText.toLowerCase(),
           base_language_id: baseLanguage?.ID,
           learning_language_id: learningLanguage?.ID,
         }),
